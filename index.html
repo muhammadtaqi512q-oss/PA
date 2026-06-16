@@ -1,43 +1,259 @@
-<!-- Design: Royal Cyberpunk (Midnight Navy & Liquid Gold) -->
-<div id="app" style="background: #000b1a; color: #ffd700; font-family: 'Segoe UI', sans-serif; padding: 20px; border: 2px solid #ffd700;">
-    <h2>💎 Nexura Central Bank</h2>
-    <div id="user-list"></div>
-    <hr style="border: 0.5px solid #ffd700;">
-    <button onclick="initiateTransfer()" style="background: #ffd700; color: #000; padding: 10px; font-weight: bold; cursor: pointer;">
-        SEND MONEY 💸
-    </button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexura Quantum Systems</title>
+    <style>
+        :root {
+            --bg-color: #000b1a;
+            --gold: #ffd700;
+            --navy-light: #001f4d;
+            --text-glow: 0 0 10px rgba(255, 215, 0, 0.6);
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--gold);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            border: 2px solid var(--gold);
+            padding: 30px;
+            background: rgba(0, 31, 77, 0.4);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--text-glow);
+        }
+        h1, h2 {
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: var(--text-glow);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .card {
+            border: 1px solid var(--gold);
+            padding: 20px;
+            background: var(--navy-light);
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s ease;
+        }
+        button:hover {
+            background: #fff;
+            box-shadow: var(--text-glow);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid var(--gold);
+            padding: 8px;
+            text-align: left;
+        }
+        th { background: var(--navy-light); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🌐 NEXURA CENTRAL ECOSYSTEM</h1>
+    
+    <div class="card">
+        <h2>📊 Main Ledger Accounts</h2>
+        <table id="ledgerTable">
+            <thead>
+                <tr>
+                    <th>User Name</th>
+                    <th>Balance</th>
+                    <th>Stars</th>
+                    <th>Level</th>
+                </tr>
+            </thead>
+            <tbody id="ledgerBody">
+                </tbody>
+        </table>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h2>💸 Web 1: Bank Terminal</h2>
+            <p>Secure peer-to-peer automated fund transfers via Nexura Workflow protocols.</p>
+            <button onclick="initiateTransfer()">Send Money</button>
+        </div>
+
+        <div class="card">
+            <h2>🌐 Web 2: Domain Market</h2>
+            <p>Sell unauthorized or non-valid domains using the MT Cipher verification mechanism.</p>
+            <button onclick="sellDomain()">Sell Domain</button>
+        </div>
+    </div>
 </div>
 
 <script>
+const GITHUB_REPO = "YOUR_GITHUB_USERNAME/YOUR_REPO_NAME"; // Change this
+const AUTH_TOKEN = "YOUR_GITHUB_PERSONAL_ACCESS_TOKEN"; // Secure this via login or secrets if public
+
+// Fetch and Render Live Ledger Data
+async function loadLedger() {
+    try {
+        // Anti-cache string to force fetch the absolute newest data file
+        const res = await fetch(`data.json?nocache=${new Date().getTime()}`);
+        const users = await res.json();
+        const tbody = document.getElementById('ledgerBody');
+        tbody.innerHTML = '';
+        users.forEach(u => {
+            tbody.innerHTML += `<tr>
+                <td>${u.name}</td>
+                <td>Rs. ${u.balance.toLocaleString()}</td>
+                <td>${'⭐'.repeat(u.stars || 0) || 'None'}</td>
+                <td>Lv. ${u.level || 1}</td>
+            </tr>`;
+        });
+        return users;
+    } catch (err) {
+        console.error("Error loading ledger:", err);
+    }
+}
+
+// MT Cipher Conversion Logic
+function calculateMTCipher(str) {
+    if (!str) return "";
+    return [...str.toLowerCase()].map(char => {
+        if (char === " ") return "@";
+        const code = char.charCodeAt(0) - 96;
+        return (code >= 1 && code <= 26) ? code : char;
+    }).join("");
+}
+
+// Trigger GitHub Actions Workflow
+async function dispatchWorkflow(updatedData, triggeringUser) {
+    alert("🚀 Dispatching transaction payload to GitHub Actions workflow...");
+    
+    const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/dispatches`, {
+        method: "POST",
+        headers: {
+            "Authorization": `token ${AUTH_TOKEN}`,
+            "Accept": "application/vnd.github.v3+json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            event_type: "update_transaction",
+            client_payload: {
+                new_data: JSON.stringify(updatedData, null, 2),
+                user: triggeringUser.replace(/\s+/g, '_') // Safe name format for file
+            }
+        })
+    });
+
+    if (response.status === 204) {
+        alert("✅ Nexura Workflow triggered successfully! Page will reload in 15s to fetch new changes.");
+        setTimeout(() => location.reload(), 15000);
+    } else {
+        alert("❌ Workflow dispatch failed. Check GitHub Token and Repository permissions.");
+    }
+}
+
+// Web 1: Transfer Money Function
 async function initiateTransfer() {
+    const users = await loadLedger();
     const senderName = prompt("Enter your Name:");
     const senderPass = prompt("Enter your Password:");
     
-    const response = await fetch('data.json');
-    let users = await response.json();
+    const sender = users.find(u => u.name.trim().toLowerCase() === senderName.trim().toLowerCase() && u.password === senderPass);
     
-    const sender = users.find(u => u.name === senderName && u.password === senderPass);
-    
-    if (sender) {
-        const receiverName = prompt("Receiver Name:");
-        const amount = parseInt(prompt("Amount to send:"));
-        
-        if (amount > sender.balance) {
-            alert("❌ Error: Insufficient Balance!");
-        } else {
-            const receiver = users.find(u => u.name === receiverName);
-            if (receiver) {
-                sender.balance -= amount;
-                receiver.balance += amount;
-                alert(`✅ Success! ${amount} transferred to ${receiverName}`);
-                // Yahan aap GitHub Action ko trigger karne ke liye API call karenge
-                updateDatabase(users);
-            } else {
-                alert("❌ User not found!");
-            }
-        }
-    } else {
-        alert("❌ Invalid Login!");
+    if (!sender) {
+        alert("❌ Invalid Sender Authentication Credentials!");
+        return;
     }
+
+    const receiverName = prompt("Enter target account user name to transfer funds to:");
+    const receiver = users.find(u => u.name.trim().toLowerCase() === receiverName.trim().toLowerCase());
+
+    if (!receiver) {
+        alert("❌ Target recipient account structure not found!");
+        return;
+    }
+
+    const amount = parseInt(prompt(`Verified. Your Balance: Rs. ${sender.balance}. Enter Amount to send:`));
+    
+    if (isNaN(amount) || amount <= 0) {
+        alert("❌ Invalid financial digit input.");
+        return;
+    }
+
+    if (amount > sender.balance) {
+        alert(`❌ Transaction Denied: Insufficient balance. Requested: Rs. ${amount}, Available: Rs. ${sender.balance}`);
+        return;
+    }
+
+    // Process Transaction
+    sender.balance -= amount;
+    receiver.balance += amount;
+    
+    await dispatchWorkflow(users, sender.name);
 }
+
+// Web 2: Sell Domain Function
+async function sellDomain() {
+    const users = await loadLedger();
+    const name = prompt("Enter User Name:");
+    const domain = prompt("Enter Domain Name (e.g., nexura.zf):");
+    const passInput = prompt("Enter Calculated MT Cipher Password:");
+
+    // Generate expected password based on user's specific request rule
+    const part1 = calculateMTCipher(name);
+    const part2 = calculateMTCipher(domain);
+    const expectedPass = `${part1},${part2}`;
+
+    if (passInput !== expectedPass) {
+        alert(`❌ Access Denied! Input Cipher does not match secure protocol structure.`);
+        return;
+    }
+
+    const targetAccountName = prompt("Cipher Accepted! Enter target account name to transfer Rs. 10,000:");
+    const targetAccount = users.find(u => u.name.trim().toLowerCase() === targetAccountName.trim().toLowerCase());
+
+    if (!targetAccount) {
+        alert("❌ Target ledger account not found!");
+        return;
+    }
+
+    // Add 10k, Add Star, Check Level Up threshold
+    targetAccount.balance += 10000;
+    targetAccount.stars = (targetAccount.stars || 0) + 1;
+
+    if (targetAccount.stars >= 5) {
+        targetAccount.stars = 0; // Reset stars
+        targetAccount.level = (targetAccount.level || 1) + 1; // Level up
+        alert(`🌟 LEVEL UP! ${targetAccount.name} has advanced to Level ${targetAccount.level}!`);
+    }
+
+    await dispatchWorkflow(users, targetAccount.name);
+}
+
+// Initialization call
+loadLedger();
 </script>
+</body>
+</html>
