@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sell Domain - Web 2</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+    input, button { margin: 5px 0; padding: 8px; width: 100%; box-sizing: border-box; }
+    .section { margin: 20px 0; padding: 15px; background: #f0f0f0; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>🌐 Sell Your Not Valid Domain</h1>
+
+  <div class="section">
+    <h3>🔐 GitHub Setup (required)</h3>
+    <label>Owner: <input id="owner" placeholder="your-username"></label>
+    <label>Repo: <input id="repo" placeholder="repo-name"></label>
+    <label>Token: <input id="token" type="password" placeholder="ghp_..."></label>
+  </div>
+
+  <div class="section">
+    <h3>📝 Domain Details</h3>
+    <input id="name" placeholder="Your Name (e.g., a)"><br>
+    <input id="domain" placeholder="Domain Name (e.g., a)"><br>
+    <input id="passInput" placeholder="Password (e.g., 1,1)"><br>
+    <button onclick="validateAndProceed()">Validate & Next</button>
+    <p id="msg1"></p>
+  </div>
+
+  <div class="section" id="receiverSection" style="display:none;">
+    <h3>📤 Transfer Rs. 10,000 to</h3>
+    <input id="receiverName" placeholder="Receiver Account Name"><br>
+    <button onclick="sellDomain()">Transfer & Earn Star</button>
+    <p id="msg2"></p>
+  </div>
+
+  <script>
+    function letterToNumber(letter) {
+      const l = letter.toLowerCase();
+      if (l < 'a' || l > 'z') return null;
+      return l.charCodeAt(0) - 96;
+    }
+
+    function computePassword(name, domain) {
+      const nameNums = [...name].map(ch => letterToNumber(ch)).filter(n => n !== null);
+      const domainNums = [...domain].map(ch => letterToNumber(ch)).filter(n => n !== null);
+      return [...nameNums, ...domainNums].join(',');
+    }
+
+    async function validateAndProceed() {
+      const name = document.getElementById('name').value.trim();
+      const domain = document.getElementById('domain').value.trim();
+      const inputPass = document.getElementById('passInput').value.trim();
+      if (!name || !domain) {
+        document.getElementById('msg1').innerText = '❌ Name and Domain required.';
+        return;
+      }
+      const expectedPass = computePassword(name, domain);
+      if (expectedPass === inputPass) {
+        document.getElementById('msg1').innerText = '✅ Valid! Now enter receiver account.';
+        document.getElementById('receiverSection').style.display = 'block';
+        window.validName = name;
+        window.validDomain = domain;
+      } else {
+        document.getElementById('msg1').innerText = `❌ Invalid password. Expected: ${expectedPass}`;
+      }
+    }
+
+    async function sellDomain() {
+      const receiver = document.getElementById('receiverName').value.trim();
+      if (!receiver) {
+        document.getElementById('msg2').innerText = '❌ Enter receiver account name.';
+        return;
+      }
+      const ownerVal = document.getElementById('owner').value;
+      const repoVal = document.getElementById('repo').value;
+      const tokenVal = document.getElementById('token').value;
+
+      const payload = {
+        event_type: 'update-data',
+        client_payload: {
+          action: 'sellDomain',
+          sellerName: window.validName,
+          domain: window.validDomain,
+          receiver: receiver
+        }
+      };
+
+      try {
+        const res = await fetch(`https://api.github.com/repos/${ownerVal}/${repoVal}/dispatches`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `token ${tokenVal}`,
+            'Accept': 'application/vnd.github.everest-preview+json'
+          },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          document.getElementById('msg2').innerText = '✅ Transfer initiated! Reloading in 3s...';
+          setTimeout(() => location.reload(), 3000);
+        } else {
+          const err = await res.text();
+          document.getElementById('msg2').innerText = '❌ Failed: ' + err;
+        }
+      } catch (e) {
+        document.getElementById('msg2').innerText = '❌ Network error: ' + e.message;
+      }
+    }
+  </script>
+</body>
+</html>
