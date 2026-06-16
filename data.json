@@ -1,72 +1,82 @@
 [
   {
-    "name": "Muhammad TAQI",
+    "username": "Muhammad TAQI",
     "password": "Muhammad Taqi512",
     "balance": 500000,
     "stars": 0,
-    "level": 0
+    "level": 1,
+    "txCount": 0
   },
   {
-    "name": "OLIVIA",
+    "username": "OLIVIA",
     "password": "OLIVIA786",
     "balance": 200000,
     "stars": 0,
-    "level": 0
+    "level": 1,
+    "txCount": 0
   },
   {
-    "name": "JACK",
-    "password": "JACK123",
+    "username": "JACK",
+    "password": "JACKTERMINAL",
     "balance": 500000,
     "stars": 0,
-    "level": 0
+    "level": 1,
+    "txCount": 0
   },
   {
-    "name": "THUNDER",
-    "password": "THUNDER123",
+    "username": "THUNDER",
+    "password": "THUNDERCORE1",
     "balance": 700000,
     "stars": 0,
-    "level": 0
+    "level": 1,
+    "txCount": 0
   },
   {
-    "name": "WILLIAM",
-    "password": "WILLIAM123",
+    "username": "WILLIAM",
+    "password": "WILLIAMSYSTEM",
     "balance": 500000,
     "stars": 0,
-    "level": 0
+    "level": 1,
+    "txCount": 0
   },
   {
-    "name": "ELIZBETH",
-    "password": "ELIZBETH123",
+    "username": "ELIZBETH",
+    "password": "ELIZBETHEMPIRE",
     "balance": 800000,
     "stars": 0,
-    "level": 0
+    "level": 1,
+    "txCount": 0
   },
   {
-    "name": "ZIRA",
-    "password": "ZIRA123",
+    "username": "ZIRA",
+    "password": "ZIRADIGITAL",
     "balance": 1000000,
     "stars": 0,
-    "level": 0
+    "level": 1,
+    "txCount": 0
   },
   {
-    "name": "LYRA",
-    "password": "LYRA123",
+    "username": "LYRA HEAD MANAGER OF NEXURA",
+    "password": "LYRANEXURABOSS",
     "balance": 3500000,
     "stars": 0,
-    "level": 0
+    "level": 1,
+    "txCount": 0
   },
   {
-    "name": "AHMED",
-    "password": "AHMED123",
+    "username": "AHMED",
+    "password": "AHMEDNETWORK",
     "balance": 50000,
     "stars": 0,
-    "level": 0
+    "level": 1,
+    "txCount": 0
   },
   {
-    "name": "OWNER",
+    "username": "OWNER",
     "password": "OWNERMASTEROKDONE",
     "balance": 100000000,
     "stars": 0,
-    "level": 0
+    "level": 1,
+    "txCount": 0
   }
 ]
