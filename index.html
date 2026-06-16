@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nexura Bank - Web 1</title>
+  <style>
+    body { font-family: sans-serif; max-width: 700px; margin: auto; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    button { margin: 10px 0; padding: 10px 20px; font-size: 16px; }
+    .section { margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>🏦 Nexura Bank</h1>
+  <div class="section">
+    <h3>All Accounts</h3>
+    <table id="userTable">
+      <thead><tr><th>Name</th><th>Balance (Rs.)</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h3>🔐 GitHub Token & Repo Setup (required for transactions)</h3>
+    <label>Owner: <input id="owner" placeholder="your-github-username"></label><br>
+    <label>Repo: <input id="repo" placeholder="repo-name"></label><br>
+    <label>Token: <input id="token" type="password" placeholder="ghp_..."></label>
+    <p><small>Token ko repo scope ke saath banayein (Settings → Developer settings → Personal access tokens → Tokens (classic))</small></p>
+  </div>
+
+  <div class="section">
+    <h3>💸 Send Money</h3>
+    <button onclick="document.getElementById('sendForm').style.display='block'">Start Transfer</button>
+    <div id="sendForm" style="display:none;">
+      <input id="senderName" placeholder="Your Name"><br>
+      <input id="senderPass" type="password" placeholder="Your Password"><br>
+      <button onclick="verifySender()">Next</button>
+    </div>
+    <div id="transferForm" style="display:none;">
+      <input id="receiverName" placeholder="Receiver Name"><br>
+      <input id="amount" type="number" placeholder="Amount"><br>
+      <button onclick="sendMoney()">Transfer</button>
+    </div>
+    <p id="sendMsg"></p>
+  </div>
+
+  <script>
+    let users = [];
+    const owner = () => document.getElementById('owner').value;
+    const repo = () => document.getElementById('repo').value;
+    const token = () => document.getElementById('token').value;
+
+    async function loadUsers() {
+      const res = await fetch('data.json');
+      users = await res.json();
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = document.querySelector('#userTable tbody');
+      tbody.innerHTML = users.map(u => `<tr><td>${u.name}</td><td>${u.balance.toLocaleString('en-IN')}</td></tr>`).join('');
+    }
+
+    function verifySender() {
+      const name = document.getElementById('senderName').value.trim();
+      const pass = document.getElementById('senderPass').value.trim();
+      const user = users.find(u => u.name === name && u.password === pass);
+      if (!user) {
+        document.getElementById('sendMsg').innerText = '❌ Invalid name or password.';
+        return;
+      }
+      window.sender = user;
+      document.getElementById('sendForm').style.display = 'none';
+      document.getElementById('transferForm').style.display = 'block';
+      document.getElementById('sendMsg').innerText = '';
+    }
+
+    async function sendMoney() {
+      const receiver = document.getElementById('receiverName').value.trim();
+      const amount = parseInt(document.getElementById('amount').value);
+      if (!receiver || isNaN(amount) || amount <= 0) {
+        document.getElementById('sendMsg').innerText = '❌ Enter valid name and amount.';
+        return;
+      }
+      if (amount > window.sender.balance) {
+        document.getElementById('sendMsg').innerText = '❌ Insufficient balance.';
+        return;
+      }
+      // Trigger workflow
+      const payload = {
+        event_type: 'update-data',
+        client_payload: {
+          action: 'sendMoney',
+          sender: window.sender.name,
+          receiver: receiver,
+          amount: amount
+        }
+      };
+      try {
+        const res = await fetch(`https://api.github.com/repos/${owner()}/${repo()}/dispatches`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `token ${token()}`,
+            'Accept': 'application/vnd.github.everest-preview+json'
+          },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          document.getElementById('sendMsg').innerText = '✅ Transfer initiated! Reloading in 3 seconds...';
+          setTimeout(() => location.reload(), 3000);
+        } else {
+          const err = await res.text();
+          document.getElementById('sendMsg').innerText = '❌ Failed: ' + err;
+        }
+      } catch (e) {
+        document.getElementById('sendMsg').innerText = '❌ Network error: ' + e.message;
+      }
+    }
+
+    loadUsers();
+  </script>
+</body>
+</html>
