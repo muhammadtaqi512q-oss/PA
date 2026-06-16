@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NEXURA Domain Registry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-neutral-900 text-white p-8">
+    <div class="max-w-md mx-auto bg-neutral-800 p-6 rounded-2xl border border-neutral-700 shadow-2xl">
+        <h2 class="text-2xl font-bold text-amber-400 mb-6 text-center">Sell Your Domain</h2>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm text-neutral-400 mb-1">Username</label>
+                <input id="dom-user" type="text" class="w-full bg-neutral-900 border border-neutral-700 p-2 rounded text-white">
+            </div>
+            <div>
+                <label class="block text-sm text-neutral-400 mb-1">Domain Name (e.g., 'a')</label>
+                <input id="dom-name" type="text" class="w-full bg-neutral-900 border border-neutral-700 p-2 rounded text-white">
+            </div>
+            <div>
+                <label class="block text-sm text-neutral-400 mb-1">Generated Password</label>
+                <input id="dom-pass" type="text" placeholder="Format: user_cipher,domain_cipher" class="w-full bg-neutral-900 border border-neutral-700 p-2 rounded text-white">
+                <p class="text-xs text-amber-500 mt-1">Logic: a=1, b=2... (e.g., name 'a' & domain 'a' = 1,1)</p>
+            </div>
+            <div>
+                <label class="block text-sm text-neutral-400 mb-1">Target Account Name (To Receive Rs. 10,000)</label>
+                <input id="dom-target" type="text" class="w-full bg-neutral-900 border border-neutral-700 p-2 rounded text-white">
+            </div>
+            <button onclick="validateAndSell()" class="w-full bg-amber-500 hover:bg-amber-600 text-neutral-950 font-bold py-2 rounded transition">
+                Verify & Sell Domain
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function getCipherValue(str) {
+            return str.toLowerCase().split('').map(char => {
+                const code = char.charCodeAt(0) - 96;
+                return (code >= 1 && code <= 26) ? code : '';
+            }).join('');
+        }
+
+        function validateAndSell() {
+            const user = document.getElementById('dom-user').value.trim();
+            const domain = document.getElementById('dom-name').value.trim();
+            const password = document.getElementById('dom-pass').value.trim();
+            const targetAccount = document.getElementById('dom-target').value.trim();
+
+            const expectedPassword = `${getCipherValue(user)},${getCipherValue(domain)}`;
+
+            if(password !== expectedPassword) {
+                alert(`Authentication Failed! Expected calculated cipher password was: ${expectedPassword}`);
+                return;
+            }
+
+            // Target verification check
+            fetch('data.json')
+                .then(res => res.json())
+                .then(data => {
+                    if(!data.users[targetAccount]) {
+                        alert("Target payment account does not exist in Nexura Central records.");
+                        return;
+                    }
+
+                    const issueTitle = `DOMAIN_SALE: ${targetAccount}`;
+                    const issueBody = JSON.stringify({ target: targetAccount, domain: domain, type: "domain_sale" });
+                    
+                    const url = `https://github.com/muhammadtaqi512q-oss/your-repo-name/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}`;
+                    window.open(url, '_blank');
+                });
+        }
+    </script>
+</body>
+</html>
