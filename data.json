@@ -1,12 +1,72 @@
 [
-  {"name": "Muhammad TAQI", "password": "Muhammad Taqi512", "balance": 500000, "stars": 0, "level": 1},
-  {"name": "OLIVIA", "password": "OLIVIA786", "balance": 200000, "stars": 0, "level": 1},
-  {"name": "JACK", "password": "JACK", "balance": 500000, "stars": 0, "level": 1},
-  {"name": "THUNDER", "password": "THUNDER", "balance": 700000, "stars": 0, "level": 1},
-  {"name": "WILLIAM", "password": "WILLIAM", "balance": 500000, "stars": 0, "level": 1},
-  {"name": "ELIZBETH", "password": "ELIZBETH", "balance": 800000, "stars": 0, "level": 1},
-  {"name": "ZIRA", "password": "ZIRA", "balance": 1000000, "stars": 0, "level": 1},
-  {"name": "LYRA", "password": "LYRA", "balance": 3500000, "stars": 0, "level": 1},
-  {"name": "AHMED", "password": "AHMED", "balance": 50000, "stars": 0, "level": 1},
-  {"name": "OWNER", "password": "OWNERMASTEROKDONE", "balance": 10000000, "stars": 0, "level": 1}
+  {
+    "name": "Muhammad TAQI",
+    "password": "Muhammad Taqi512",
+    "balance": 500000,
+    "stars": 0,
+    "level": 0
+  },
+  {
+    "name": "OLIVIA",
+    "password": "OLIVIA786",
+    "balance": 200000,
+    "stars": 0,
+    "level": 0
+  },
+  {
+    "name": "JACK",
+    "password": "JACK123",
+    "balance": 500000,
+    "stars": 0,
+    "level": 0
+  },
+  {
+    "name": "THUNDER",
+    "password": "THUNDER123",
+    "balance": 700000,
+    "stars": 0,
+    "level": 0
+  },
+  {
+    "name": "WILLIAM",
+    "password": "WILLIAM123",
+    "balance": 500000,
+    "stars": 0,
+    "level": 0
+  },
+  {
+    "name": "ELIZBETH",
+    "password": "ELIZBETH123",
+    "balance": 800000,
+    "stars": 0,
+    "level": 0
+  },
+  {
+    "name": "ZIRA",
+    "password": "ZIRA123",
+    "balance": 1000000,
+    "stars": 0,
+    "level": 0
+  },
+  {
+    "name": "LYRA",
+    "password": "LYRA123",
+    "balance": 3500000,
+    "stars": 0,
+    "level": 0
+  },
+  {
+    "name": "AHMED",
+    "password": "AHMED123",
+    "balance": 50000,
+    "stars": 0,
+    "level": 0
+  },
+  {
+    "name": "OWNER",
+    "password": "OWNERMASTEROKDONE",
+    "balance": 100000000,
+    "stars": 0,
+    "level": 0
+  }
 ]
