@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nexura Central Banking & Domain System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f6f9; padding: 20px; }
+        .card { margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center mb-4 text-primary">Nexura Dashboard</h1>
+
+    <!-- Flash Messages for Errors or Success -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{% if category=='error' %}danger{% else %}success{% endif %} alert-dismissible fade show">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="row">
+        <!-- USER ACCOUNTS DISPLAY -->
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white"><h5>All Accounts Live Status</h5></div>
+                <div class="card-body">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Balance (PKR)</th>
+                                <th>Stars</th>
+                                <th>Level</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for name, info in users.items() %}
+                            <tr>
+                                <td><strong>{{ name }}</strong></td>
+                                <td class="text-success fw-bold">Rs. {{ "{:,}".format(info.balance) }}</td>
+                                <td>{{ "⭐" * info.stars if info.stars > 0 else "No Stars" }} ({{info.stars}})</td>
+                                <td><span class="badge bg-info text-dark">Lvl {{ info.level }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- WEB 1: SEND MONEY -->
+        <div class="col-md-6">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white"><h4>WEB 1: Secure Money Transfer</h4></div>
+                <div class="card-body">
+                    <form action="/send_money" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Your Account Name</label>
+                            <input type="text" name="sender_name" class="form-file form-control" required placeholder="e.g. Muhammad TAQI">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Your Password</label>
+                            <input type="password" name="password" class="form-control" required placeholder="Enter Secret Password">
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <label class="form-label">Receiver Account Name</label>
+                            <input type="text" name="receiver_name" class="form-control" required placeholder="e.g. OLIVIA">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Amount (Rs.)</label>
+                            <input type="number" name="amount" class="form-control" required placeholder="e.g. 50000">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Verify & Send Money</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- WEB 2: SELL DOMAIN -->
+        <div class="col-md-6">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark"><h4>WEB 2: Sell Premium Domain</h4></div>
+                <div class="card-body">
+                    <div class="alert alert-info py-2" style="font-size: 0.85rem;">
+                        <strong>Password Rule:</strong> username_sum,domain_sum (e.g. User 'a' + Domain 'a' = password <code>1,1</code>)
+                    </div>
+                    <form action="/sell_domain" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Seller Username</label>
+                            <input type="text" name="domain_user" class="form-control" required placeholder="e.g. a">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Domain Name to Sell</label>
+                            <input type="text" name="domain_name" class="form-control" required placeholder="e.g. a">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Domain Password</label>
+                            <input type="text" name="domain_password" class="form-control" required placeholder="e.g. 1,1">
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <label class="form-label">Reward Destination Account (Gets Rs.10k + Star)</label>
+                            <input type="text" name="target_account" class="form-control" required placeholder="e.g. OWNER">
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">Validate & Claim Reward</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
