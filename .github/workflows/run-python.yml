@@ -1,0 +1,36 @@
+name: Auto Run Python Flask App
+
+# Yeh batata hai ke workflow kab chalega (jab bhi main branch par code push hoga)
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-and-test:
+    runs-on: ubuntu-latest # GitHub ka server (Linux VM)
+
+    steps:
+    # 1. Aapka code GitHub server par copy karta hai
+    - name: Checkout repository code
+      uses: actions/checkout@v4
+
+    # 2. Python environment setup karta hai
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    # 3. Flask aur baki required libraries install karta hai
+    - name: Install Flask Dependency
+      run: |
+        python -m pip install --upgrade pip
+        pip install flask
+
+    # 4. App ka structure check karne aur ek dafa run karne ke liye (Syntax/Import errors test karne ke liye)
+    - name: Run Python App Test
+      run: |
+        python -c "import app; print('Flask app compiled successfully without errors!')"
